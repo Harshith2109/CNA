@@ -1,0 +1,22 @@
+[Interface]
+# Client Private Key (Generate via: wg genkey)
+PrivateKey = YOUR_CLIENT_PRIVATE_KEY
+
+# Client VPN IP assigned by server
+Address = 10.8.0.2/24
+
+# DNS Servers (Optional)
+DNS = 1.1.1.1, 8.8.8.8
+
+[Peer]
+# WireGuard Server Public Key
+PublicKey = YOUR_SERVER_PUBLIC_KEY
+
+# Public IP address and port of your Azure WireGuard Gateway
+Endpoint = AZURE_SERVER_PUBLIC_IP:51820
+
+# Route only VPN traffic and Azure private subnet (e.g. 10.160.0.0/16 Azure VNet)
+AllowedIPs = 10.8.0.0/24, 10.160.0.0/16
+
+# Keep connection active through NAT gateways
+PersistentKeepalive = 25
