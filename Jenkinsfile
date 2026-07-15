@@ -98,8 +98,8 @@ pipeline {
                             echo "Securing temporary SSH key file permissions for Windows..."
                             bat "icacls.exe \"${SSH_KEY}\" /reset"
                             bat "icacls.exe \"${SSH_KEY}\" /inheritance:r"
-                            bat "icacls.exe \"${SSH_KEY}\" /grant:r \"%USERNAME%:(R)\""
-                            bat "icacls.exe \"${SSH_KEY}\" /grant:r \"*S-1-5-18:(R)\" || exit 0"
+                            bat "icacls.exe \"${SSH_KEY}\" /grant:r \"*S-1-5-18:(R)\""
+                            bat "icacls.exe \"${SSH_KEY}\" /grant:r \"*S-1-5-32-544:(R)\" || exit 0"
                         }
                         
                         // 1. Copy Docker Compose config to remote host
