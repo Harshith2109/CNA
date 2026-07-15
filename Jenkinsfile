@@ -102,12 +102,15 @@ pipeline {
                             bat "icacls.exe \"${SSH_KEY}\" /grant:r \"*S-1-5-32-544:(R)\" || exit 0"
                         }
                         
-                        // 1. Copy Docker Compose config to remote host
-                        runCmd "scp -i \"${SSH_KEY}\" -o StrictHostKeyChecking=no docker-compose.prod.yml ${SSH_USER}@${AZURE_VM_PRIVATE_IP}:/home/${SSH_USER}/docker-compose.yml"
+                        // 1. Create target directory on VM
+                        runCmd "ssh -i \"${SSH_KEY}\" -o StrictHostKeyChecking=no ${SSH_USER}@${AZURE_VM_PRIVATE_IP} \"mkdir -p /home/${SSH_USER}/task-manager\""
+
+                        // 2. Copy Docker Compose config to target directory
+                        runCmd "scp -i \"${SSH_KEY}\" -o StrictHostKeyChecking=no docker-compose.prod.yml ${SSH_USER}@${AZURE_VM_PRIVATE_IP}:/home/${SSH_USER}/task-manager/docker-compose.yml"
                         
-                        // 2. Fetch remote deployment variables and login remote docker to ACR
+                        // 3. Fetch remote deployment variables and login remote docker to ACR
                         withCredentials([usernamePassword(credentialsId: "${ACR_CREDS_ID}", usernameVariable: 'ACR_USER', passwordVariable: 'ACR_PASS')]) {
-                            runCmd "ssh -i \"${SSH_KEY}\" -o StrictHostKeyChecking=no ${SSH_USER}@${AZURE_VM_PRIVATE_IP} \"docker login ${ACR_REGISTRY} -u ${ACR_USER} -p ${ACR_PASS} && cd /home/${SSH_USER} && docker compose pull && docker compose up -d --remove-orphans && docker image prune -f\""
+                            runCmd "ssh -i \"${SSH_KEY}\" -o StrictHostKeyChecking=no ${SSH_USER}@${AZURE_VM_PRIVATE_IP} \"docker login ${ACR_REGISTRY} -u ${ACR_USER} -p ${ACR_PASS} && cd /home/${SSH_USER}/task-manager && docker compose pull && docker compose up -d --remove-orphans && docker image prune -f\""
                         }
                     }
                 }
