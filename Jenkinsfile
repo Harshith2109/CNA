@@ -60,7 +60,7 @@ pipeline {
             steps {
                 script {
                     echo "Establishing secure WireGuard tunnel to Azure Virtual Network..."
-                    configFileProvider([configFile(fileId: "${WG_CONFIG_CREDS_ID}", variable: 'WG_CONFIG_PATH')]) {
+                    withCredentials([file(credentialsId: "${WG_CONFIG_CREDS_ID}", variable: 'WG_CONFIG_PATH')]) {
                         if (isUnix()) {
                             sh "sudo cp ${WG_CONFIG_PATH} /etc/wireguard/wg0.conf"
                             sh "sudo chmod 600 /etc/wireguard/wg0.conf"
