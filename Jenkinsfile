@@ -92,13 +92,13 @@ pipeline {
             steps {
                 script {
                     echo "Deploying update to Azure Virtual Machine..."
-                    sshagent(credentials: ["${SSH_CREDS_ID}"]) {
+                    withCredentials([sshUserPrivateKey(credentialsId: "${SSH_CREDS_ID}", keyFileVariable: 'SSH_KEY', usernameVariable: 'SSH_USER')]) {
                         // 1. Copy Docker Compose config to remote host
-                        runCmd "scp -o StrictHostKeyChecking=no docker-compose.yml ${AZURE_VM_USER}@${AZURE_VM_PRIVATE_IP}:/home/${AZURE_VM_USER}/docker-compose.yml"
+                        runCmd "scp -i \"${SSH_KEY}\" -o StrictHostKeyChecking=no docker-compose.yml ${SSH_USER}@${AZURE_VM_PRIVATE_IP}:/home/${SSH_USER}/docker-compose.yml"
                         
                         // 2. Fetch remote deployment variables and login remote docker to ACR
                         withCredentials([usernamePassword(credentialsId: "${ACR_CREDS_ID}", usernameVariable: 'ACR_USER', passwordVariable: 'ACR_PASS')]) {
-                            runCmd "ssh -o StrictHostKeyChecking=no ${AZURE_VM_USER}@${AZURE_VM_PRIVATE_IP} \"docker login ${ACR_REGISTRY} -u ${ACR_USER} -p ${ACR_PASS} && cd /home/${AZURE_VM_USER} && docker compose pull && docker compose up -d --remove-orphans && docker image prune -f\""
+                            runCmd "ssh -i \"${SSH_KEY}\" -o StrictHostKeyChecking=no ${SSH_USER}@${AZURE_VM_PRIVATE_IP} \"docker login ${ACR_REGISTRY} -u ${ACR_USER} -p ${ACR_PASS} && cd /home/${SSH_USER} && docker compose pull && docker compose up -d --remove-orphans && docker image prune -f\""
                         }
                     }
                 }
