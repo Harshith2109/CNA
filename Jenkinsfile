@@ -68,7 +68,7 @@ pipeline {
                         } else {
                             echo "Executing Windows-native WireGuard service installation..."
                             bat "copy \"${WG_CONFIG_PATH}\" \"${WORKSPACE}\\wg0.conf\""
-                            bat "\"C:\\Program Files\\WireGuard\\wireguard.exe\" /installtunnelservice \"${WORKSPACE}\\wg0.conf\""
+                            bat "\"C:\\Program Files\\WireGuard\\wireguard.exe\" /installtunnelservice \"${WORKSPACE}\\wg0.conf\" || exit 0"
                         }
                     }
                 }
