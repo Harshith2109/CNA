@@ -9,7 +9,7 @@ pipeline {
         
         // Deployment settings
         AZURE_VM_USER = "azureuser"
-        AZURE_VM_PRIVATE_IP = "10.8.0.1" // Private IP of VM via WireGuard tunnel
+        AZURE_VM_PRIVATE_IP = "10.8.0.1" // WireGuard VPN Gateway IP for 1-VM setup
         
         // Jenkins Credentials IDs
         ACR_CREDS_ID = "azure-acr-login"
