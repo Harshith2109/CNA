@@ -103,7 +103,7 @@ pipeline {
                         }
                         
                         // 1. Copy Docker Compose config to remote host
-                        runCmd "scp -i \"${SSH_KEY}\" -o StrictHostKeyChecking=no docker-compose.yml ${SSH_USER}@${AZURE_VM_PRIVATE_IP}:/home/${SSH_USER}/docker-compose.yml"
+                        runCmd "scp -i \"${SSH_KEY}\" -o StrictHostKeyChecking=no docker-compose.prod.yml ${SSH_USER}@${AZURE_VM_PRIVATE_IP}:/home/${SSH_USER}/docker-compose.yml"
                         
                         // 2. Fetch remote deployment variables and login remote docker to ACR
                         withCredentials([usernamePassword(credentialsId: "${ACR_CREDS_ID}", usernameVariable: 'ACR_USER', passwordVariable: 'ACR_PASS')]) {

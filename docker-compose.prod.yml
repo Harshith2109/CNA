@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:6.0
+    container_name: mern-mongodb
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - mern-network
+
+  backend:
+    image: taskflowregistry.azurecr.io/task-manager-backend:latest
+    container_name: mern-backend
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - MONGODB_URI=mongodb://mongodb:27017/taskmanager
+      - JWT_SECRET=productionsecretkeyplaceholder
+      - NODE_ENV=production
+    depends_on:
+      - mongodb
+    networks:
+      - mern-network
+
+  frontend:
+    image: taskflowregistry.azurecr.io/task-manager-frontend:latest
+    container_name: mern-frontend
+    restart: always
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    networks:
+      - mern-network
+
+volumes:
+  mongo-data:
+
+networks:
+  mern-network:
+    driver: bridge
