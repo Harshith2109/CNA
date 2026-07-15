@@ -50,8 +50,8 @@ pipeline {
             steps {
                 script {
                     echo "Building Docker images for MERN services..."
-                    runCmd "docker build -t ${BACKEND_IMAGE}:${BUILD_NUMBER} -t ${BACKEND_IMAGE}:latest ./backend"
-                    runCmd "docker build -t ${FRONTEND_IMAGE}:${BUILD_NUMBER} -t ${FRONTEND_IMAGE}:latest ./frontend"
+                    runCmd "docker build -t ${BACKEND_IMAGE}:latest ./backend"
+                    runCmd "docker build -t ${FRONTEND_IMAGE}:latest ./frontend"
                 }
             }
         }
@@ -81,9 +81,7 @@ pipeline {
                     echo "Publishing container images to Azure Container Registry..."
                     withCredentials([usernamePassword(credentialsId: "${ACR_CREDS_ID}", usernameVariable: 'ACR_USER', passwordVariable: 'ACR_PASS')]) {
                         runCmd "docker login ${ACR_REGISTRY} -u ${ACR_USER} -p ${ACR_PASS}"
-                        runCmd "docker push ${BACKEND_IMAGE}:${BUILD_NUMBER}"
                         runCmd "docker push ${BACKEND_IMAGE}:latest"
-                        runCmd "docker push ${FRONTEND_IMAGE}:${BUILD_NUMBER}"
                         runCmd "docker push ${FRONTEND_IMAGE}:latest"
                     }
                 }
