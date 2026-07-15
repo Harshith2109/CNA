@@ -93,6 +93,15 @@ pipeline {
                 script {
                     echo "Deploying update to Azure Virtual Machine..."
                     withCredentials([sshUserPrivateKey(credentialsId: "${SSH_CREDS_ID}", keyFileVariable: 'SSH_KEY', usernameVariable: 'SSH_USER')]) {
+                        if (!isUnix()) {
+                            // Windows OpenSSH requires strict private key file permissions
+                            echo "Securing temporary SSH key file permissions for Windows..."
+                            bat "icacls.exe \"${SSH_KEY}\" /reset"
+                            bat "icacls.exe \"${SSH_KEY}\" /inheritance:r"
+                            bat "icacls.exe \"${SSH_KEY}\" /grant:r \"%USERNAME%:(R)\""
+                            bat "icacls.exe \"${SSH_KEY}\" /grant:r \"*S-1-5-18:(R)\" || exit 0"
+                        }
+                        
                         // 1. Copy Docker Compose config to remote host
                         runCmd "scp -i \"${SSH_KEY}\" -o StrictHostKeyChecking=no docker-compose.yml ${SSH_USER}@${AZURE_VM_PRIVATE_IP}:/home/${SSH_USER}/docker-compose.yml"
                         
