@@ -3,9 +3,9 @@ pipeline {
 
     environment {
         // Azure Container Registry settings
-        ACR_REGISTRY = "taskmanagerregistry.azurecr.io"
-        BACKEND_IMAGE = "taskmanagerregistry.azurecr.io/task-manager-backend"
-        FRONTEND_IMAGE = "taskmanagerregistry.azurecr.io/task-manager-frontend"
+        ACR_REGISTRY = "taskflowregistry.azurecr.io"
+        BACKEND_IMAGE = "taskflowregistry.azurecr.io/task-manager-backend"
+        FRONTEND_IMAGE = "taskflowregistry.azurecr.io/task-manager-frontend"
         
         // Deployment settings
         AZURE_VM_USER = "azureuser"
